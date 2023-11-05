@@ -12,8 +12,26 @@ camera.position.set(0, 0, 3);
 
 //model
 const geometry = new THREE.PlaneGeometry(1, 1);
-const material = new THREE.MeshBasicMaterial({
-  color: 0xffffff,
+const material = new THREE.RawShaderMaterial({
+  vertexShader: `
+  uniform mat4 projectionMatrix;
+  uniform mat4 viewMatrix;
+  uniform mat4 modelMatrix;
+  
+  attribute vec3 position;
+
+  void main()
+  {
+    gl_Position=projectionMatrix * viewMatrix * modelMatrix * vec4(position,1.0);
+  }
+  `,
+  fragmentShader: `
+   precision mediump float;
+
+   void main(){
+    gl_FragColor=vec4(1.0,0.0,0.0,1.0);
+   }
+  `,
 });
 const plane = new THREE.Mesh(geometry, material);
 scene.add(plane);
